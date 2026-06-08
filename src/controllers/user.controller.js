@@ -23,7 +23,7 @@ const registerUser = asyncHandler(async (req, res) => {
     }
     
     // check if user already exists: username & email.
-    const existedUser = User.findOne({
+    const existedUser = await User.findOne({
         $or: [{ username }, { email }]
     })
     console.log("existedUser : ", existedUser);
@@ -33,9 +33,9 @@ const registerUser = asyncHandler(async (req, res) => {
     }
     
     // check for images - avatar
-    const avatarLocalPath = req.files?.avatar[0]?.path;
+    const avatarLocalPath = req.files?.avatar?.[0]?.path;
     console.log("avatarLocalPath: ", avatarLocalPath)
-    const coverImageLocalPath = req.files?.coverImage[0]?.path;
+    const coverImageLocalPath = req.files?.coverImage?.[0]?.path;
     console.log("coverImageLocalPath: ", coverImageLocalPath)
     
     if (!avatarLocalPath) {
@@ -73,7 +73,7 @@ const registerUser = asyncHandler(async (req, res) => {
     
     // return response or error 
     return res.status(201).json(
-        new ApiResponse(200, createUser, "User registered sucessfully")
+        new ApiResponse(201, createUser, "User registered sucessfully")
     )
 
 })
