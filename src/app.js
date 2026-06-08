@@ -22,4 +22,9 @@ app.use(express.static("public"))   // middleware for storing static asset in se
 
 app.use(cookieParser())    // midddleware used to deal with users browser's cookies from server
 
+
+import userRouter from "./routes/user.routes.js"
+
+app.use("/api/v1/users", userRouter)
+
 export default app;
