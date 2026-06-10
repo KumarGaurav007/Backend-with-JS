@@ -11,7 +11,7 @@ const generateAccessAndRefreshToken = async (userId) => {
         const accesToken = user.generateAccessToken()
         const refreshToken = user.generateRefreshToken()
 
-        user.refreshToken = refreshToken;
+        user.refreshtoken = refreshToken;
         await user.save({ validateBeforeSave: false })
 
         return { accesToken, refreshToken };
@@ -100,8 +100,8 @@ const loginUser = asyncHandler(async (req, res) => {
 
     const { email, username, password } = req.body
 
-    if (!username || !email) {
-        throw new ApiError(400, "username or email required")
+    if ((!username && !email) || !password?.trim()) {
+        throw new ApiError(400, "username or email and password are required")
     }
 
     const user = await User.findOne({
@@ -197,15 +197,15 @@ const refreshAccessToken = asyncHandler(async(req,res) => {
             secure: true
         }
     
-        const {accessToken, newRefreshToken} = await generateAccessAndRefreshToken(user._id)
+        const {accesToken, refreshToken} = await generateAccessAndRefreshToken(user._id)
     
         return res.status(200)
-        .cookie("accessToken", accessToken, options)
-        .cookie("refreshToken", newRefreshToken, options)
+        .cookie("accessToken", accesToken, options)
+        .cookie("refreshToken", refreshToken, options)
         .json(
             new ApiResponse(
                 200,
-                {accessToken, refreshToken: newRefreshToken},
+                {accessToken: accesToken, refreshToken},
                 "Access token refreshed"
             )
         )
